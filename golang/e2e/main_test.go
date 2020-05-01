@@ -8,16 +8,21 @@ import (
 	"net"
 	"net/http"
 	"testing"
+
+	"github.com/gorilla/mux"
 )
 
 func buildServer(body string) *http.Server {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
-		io.WriteString(w, body)
-	})
+	r := mux.NewRouter()
+
+	r.Methods("GET").
+		PathPrefix("/").
+		HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+			io.WriteString(w, body)
+		})
 
 	return &http.Server{
-		Handler: mux,
+		Handler: r,
 	}
 }
 
@@ -35,11 +40,9 @@ func TestStartServer(t *testing.T) {
 		if err := srv.Serve(l); err != http.ErrServerClosed {
 			t.Fatalf("HTTP server ListenAndServe: %v", err)
 		}
-		// サーバが終了したことを通知。
 		close(idleConnsClosed)
 	}()
 
-	// Act
 	res, err := http.Get("http://" + l.Addr().String())
 	if err != nil {
 		t.Fatal(err)
@@ -50,16 +53,13 @@ func TestStartServer(t *testing.T) {
 	}
 	res.Body.Close()
 
-	// Assert
 	if string(b) != want {
 		t.Fatalf("want %q, but %q", want, b)
 	}
 
-	// Cleanup
 	if err := srv.Shutdown(context.Background()); err != nil {
 		t.Fatalf("HTTP server Shutdown: %v", err)
 	}
 
-	// サーバの終了を確認してからテストコードを終了する。
 	<-idleConnsClosed
 }
