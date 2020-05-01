@@ -18,6 +18,7 @@ jobs:
         env:
           MYSQL_DATABASE: test_db
           MYSQL_ROOT_PASSWORD: root
+        options: -v ${{ github.workspace }}/golang/e2e/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
 
     steps:
     - name: Check out code into the Go module directory
