@@ -14,20 +14,6 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func buildServer(body string) *http.Server {
-	r := mux.NewRouter()
-
-	r.Methods("GET").
-		PathPrefix("/").
-		HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-			io.WriteString(w, body)
-		})
-
-	return &http.Server{
-		Handler: r,
-	}
-}
-
 func TestStartServer(t *testing.T) {
 	want := "Hello, world!\n"
 
@@ -87,6 +73,20 @@ func TestCreateItemWithDBMock(t *testing.T) {
 
 	if err := mock.ExpectationsWereMet(); err != nil {
 		t.Errorf(err.Error())
+	}
+}
+
+func buildServer(body string) *http.Server {
+	r := mux.NewRouter()
+
+	r.Methods("GET").
+		PathPrefix("/").
+		HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+			io.WriteString(w, body)
+		})
+
+	return &http.Server{
+		Handler: r,
 	}
 }
 
