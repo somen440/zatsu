@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"io"
 	"io/ioutil"
 	"log"
@@ -9,6 +10,7 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/gorilla/mux"
 )
 
@@ -62,4 +64,52 @@ func TestStartServer(t *testing.T) {
 	}
 
 	<-idleConnsClosed
+}
+
+func TestCreateItemWithDBMock(t *testing.T) {
+	name := "hoge"
+
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf(err.Error())
+	}
+	defer db.Close()
+
+	mock.ExpectBegin()
+	mock.ExpectExec("intert into items").
+		WithArgs(name).
+		WillReturnResult(sqlmock.NewResult(1, 1))
+	mock.ExpectCommit()
+
+	if err := createItem(db, name); err != nil {
+		t.Errorf(err.Error())
+	}
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf(err.Error())
+	}
+}
+
+func createItem(db *sql.DB, name string) error {
+	var err error
+
+	tx, err := db.Begin()
+	if err != nil {
+		return err
+	}
+	defer func() {
+		switch err {
+		case nil:
+			err = tx.Commit()
+		default:
+			tx.Rollback()
+		}
+	}()
+
+	query := "intert into items (name) values (?)"
+	if _, err = tx.Exec(query, name); err != nil {
+		return err
+	}
+
+	return nil
 }
