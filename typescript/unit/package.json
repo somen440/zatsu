@@ -1,0 +1,19 @@
+{
+  "name": "unit",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^25.2.1",
+    "jest": "^25.5.4",
+    "ts-jest": "^25.4.0"
+  },
+  "dependencies": {
+    "typescript": "^3.8.3"
+  }
+}
