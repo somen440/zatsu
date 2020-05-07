@@ -25,6 +25,12 @@ jobs:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
 
+    - name: update
+      run: apt-get update
+
+    - name: install mysql server
+      run: apt-get install mysql-server
+
     - name: Setup
       run: mysql -uroot -proot test_db < golang/e2e/docker-entrypoint-initdb.d/initdb.sql
 
