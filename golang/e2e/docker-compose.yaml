@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  test:
+    image: golang:1.13-alpine
+    working_dir: /app
+    command: go test -v
+    environment:
+      USER: root
+      PASSWORD: root
+      HOST: db
+      PORT: 3306
+      DATABASE: test_database
+      CGO_ENABLED: 0
+    volumes:
+      - ./:/app
+  db:
+    image: mysql:5.7
+    container_name: db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: test_database
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: docker
+      TZ: 'Asia/Tokyo'
+    volumes:
+    - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
