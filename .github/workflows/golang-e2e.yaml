@@ -9,9 +9,6 @@ jobs:
   e2e:
     runs-on: ubuntu-latest
 
-    container:
-      image: golang:1.13
-
     services:
       mysql:
         image: mysql:5.7
@@ -37,6 +34,10 @@ jobs:
     - name: Setup
       run: mysql -uroot -proot test_db < golang/e2e/docker-entrypoint-initdb.d/initdb.sql
 
+    - uses: actions/setup-go@v2
+      with:
+        go-version: '^1.13.1'
+
     - name: Install
       working-directory: ./golang/e2e
       run: go mod download
@@ -45,7 +46,7 @@ jobs:
       working-directory: ./golang/e2e
       run: go test -v
       env:
-        HOST: mysql
+        HOST: 127.0.0.1
         PORT: 3306
         USER: root
         PASSWORD: root
