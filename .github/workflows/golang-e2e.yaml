@@ -4,6 +4,8 @@ on:
   pull_request:
     brances:
     - master
+    paths:
+    - golang/e2e/
 
 jobs:
   e2e:
