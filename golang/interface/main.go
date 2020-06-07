@@ -8,6 +8,6 @@ import (
 )
 
 func main() {
-	fmt.Println("interface test --")
-	foo.Exec(hoge.New())
+  fmt.Println("interface test --")
+	foo.Exec(hoge.New(hoge.NewBar()))
 }
