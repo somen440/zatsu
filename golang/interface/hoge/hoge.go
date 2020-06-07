@@ -1,14 +1,14 @@
 package hoge
 
 import (
-	"github.com/somen440/zatsu/golang/interface/foo"
+	"github.com/somen440/zatsu/golang/interface/di"
 )
 
 type Hoge struct {
-	bar *Bar
+	bar di.Bar
 }
 
-func New(bar *Bar) *Hoge {
+func New(bar di.Bar) *Hoge {
 	return &Hoge{
 		bar: bar,
 	}
@@ -18,16 +18,6 @@ func (h *Hoge) HogeMethod() string {
 	return "hoge method."
 }
 
-func (h *Hoge) Bar() foo.Bar {
+func (h *Hoge) Bar() di.Bar {
 	return h.bar
-}
-
-type Bar struct{}
-
-func NewBar() *Bar {
-	return &Bar{}
-}
-
-func (bar *Bar) BarMethod() string {
-	return "bar method."
 }

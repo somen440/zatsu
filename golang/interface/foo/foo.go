@@ -1,17 +1,12 @@
 package foo
 
-import "fmt"
+import (
+	"fmt"
 
-type Hoge interface {
-	HogeMethod() string
-	Bar() Bar
-}
+	"github.com/somen440/zatsu/golang/interface/di"
+)
 
-type Bar interface {
-	BarMethod() string
-}
-
-func Exec(h Hoge) {
+func Exec(h di.Hoge) {
 	fmt.Println("\t" + h.HogeMethod())
 	fmt.Println("\t" + h.Bar().BarMethod())
 }
