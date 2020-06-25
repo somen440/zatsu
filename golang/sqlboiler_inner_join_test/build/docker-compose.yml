@@ -1,0 +1,24 @@
+version: "3.7"
+services:
+  db:
+    image: mysql:5.7
+    ports:
+      - 3232:3306
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql/conf.d:/etc/mysql/conf.d
+      - ./mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
+      - ./log/mysql:/var/log/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: test_user
+      MYSQL_PASSWORD: test_pass
+      MYSQL_DATABASE: test_db
+      TZ: Asia/Tokyo
+
+  wait:
+    image: jwilder/dockerize
+    command: ["dockerize", "-wait", "tcp://db:3306", "-timeout", "30s"]
+
+volumes:
+  mysql_data:

@@ -1,0 +1,7 @@
+[mysql]
+  dbname  = "test_db"
+  host    = "localhost"
+  port    = 3232
+  user    = "test_user"
+  pass    = "test_pass"
+  sslmode = "false"
