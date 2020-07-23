@@ -1,8 +1,6 @@
 name: PR Comment hook
 
 on:
-  pull_request:
-    types: [opened]
   issue_comment:
     types: [created]
 
@@ -11,19 +9,5 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: khan/pull-request-comment-trigger@master
-      id: check
-      with:
-        trigger: '@deploy'
-        reaction: rocket
-      env:
-        GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
-
-    - if: steps.check.outputs.triggered == 'true'
-      run: echo $GITHUB_REF
-
-    - name: Comment PR
-      uses: thollander/actions-comment-pull-request@master
-      with:
-        message: 'Example of message !'
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - run: |
+      $(echo '${{ toJSON(github) }}' | jq -r ".sha[0:7]")
