@@ -9,6 +9,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
     - name: Dump GitHub context
       id: trigger
 #      env:
@@ -21,8 +24,26 @@ jobs:
       if: steps.trigger.outputs.cmd == 'deploy'
       run: |
         echo cmd is deploy
-        pr_branch=`curl https://api.github.com/repos/somen440/zatsu/pulls/5 | jq '.head.ref'`
-        for file in `git diff --name-only origin/master origin/${pr_branch}`
+        
+        pr_context=`curl https://api.github.com/repos/somen440/zatsu/pulls/5`
+        pr_branch=`echo ${pr_context} | jq '.head.ref'`
+        pr_number=`echo ${pr_context} | jq '.number'`
+        pr_label=`echo ${pr_context} | jq '.head.label'`
+        
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git checkout -b dev origin/dev
+
+        for file in `git diff --name-only origin/dev origin/${pr_branch}`
         do
           echo file is $file
+          git checkout $file -- origin/${pr_branch}
         done
+
+        git add .
+        git commit -m "update dev from #${pr_number} ${pr_label}"
+
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
