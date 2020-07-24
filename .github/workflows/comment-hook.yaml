@@ -21,8 +21,8 @@ jobs:
       if: steps.trigger.outputs.cmd == 'deploy'
       run: |
         echo cmd is deploy
-        pr_branch=`curl https://api.github.com/repos/somen440/zatsu/pulls/5 | jq '.head.ref'
-        for file in $(git diff --name-only origin/master origin/${pr_branch})
+        pr_branch=`curl https://api.github.com/repos/somen440/zatsu/pulls/5 | jq '.head.ref'`
+        for file in `git diff --name-only origin/master origin/${pr_branch}`
         do
           echo file is $file
         done
