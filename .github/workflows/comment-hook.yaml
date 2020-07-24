@@ -20,7 +20,7 @@ jobs:
         echo ::set-output name=cmd::${{ github.event.comment.body }}
         echo ::set-output name=pr_url::${{ github.event.issue.pull_request.url }}
 
-    - name: Check output
+    - name: Commit
       if: steps.trigger.outputs.cmd == 'deploy'
       run: |
         echo cmd is deploy
@@ -32,6 +32,7 @@ jobs:
         
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
+        git fetch --prune
         git checkout -b dev origin/dev
 
         for file in `git diff --name-only origin/dev origin/${pr_branch}`
