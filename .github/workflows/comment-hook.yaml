@@ -10,6 +10,14 @@ jobs:
 
     steps:
     - name: Dump GitHub context
+      id: trigger
       env:
         GITHUB_CONTEXT: ${{ toJson(github) }}
-      run: echo "$GITHUB_CONTEXT"
+      run: |
+        echo "$GITHUB_CONTEXT"
+        echo ::set-output name=cmd::${{ github.event.comment.body }}
+        echo ::set-output name=pr_url::${{ github.event.issue.pull_request.url }}
+
+    - name: Check output
+      if: steps.trigger.outputs.cmd == "deploy"
+      run: echo cmd is deploy
