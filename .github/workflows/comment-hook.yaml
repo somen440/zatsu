@@ -10,4 +10,4 @@ jobs:
 
     steps:
     - run: |
-      $(echo '${{ toJSON(github) }}' | jq -r ".sha[0:7]")
+        $(echo '${{ toJSON(github) }}' | jq -r ".sha[0:7]")
