@@ -38,7 +38,7 @@ jobs:
         for file in `git diff --name-only origin/dev origin/${pr_branch}`
         do
           echo file is $file
-          git checkout $file -- origin/${pr_branch}
+          git checkout origin/${pr_branch} -- $file
         done
 
         git add .
