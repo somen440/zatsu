@@ -19,16 +19,19 @@ jobs:
       run: |
         echo ::set-output name=cmd::${{ github.event.comment.body }}
         echo ::set-output name=pr_url::${{ github.event.issue.pull_request.url }}
+        pr_context=`curl ${{ github.event.issue.pull_request.url }}`
+        echo ::set-output name=pr_branch::`echo ${pr_context} | jq '.head.ref' --raw-output`
+        echo ::set-output name=pr_number::`echo ${pr_context} | jq '.number' --raw-output`
+        echo ::set-output name=pr_label::`echo ${pr_context} | jq '.head.label' --raw-output`
 
     - name: Commit
       if: steps.trigger.outputs.cmd == 'deploy'
       run: |
         echo cmd is deploy
-        
-        pr_context=`curl ${{ steps.trigger.outputs.pr_url }}`
-        pr_branch=`echo ${pr_context} | jq '.head.ref' --raw-output`
-        pr_number=`echo ${pr_context} | jq '.number' --raw-output`
-        pr_label=`echo ${pr_context} | jq '.head.label' --raw-output`
+      
+        pr_branch=${{ steps.trigger.outputs.pr_branch }}
+        pr_number=${{ steps.trigger.outputs.pr_number }}
+        pr_label=${{ steps.trigger.outputs.pr_label }}
         
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
@@ -50,3 +53,7 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         branch: dev
+
+    - uses: micnncim/action-lgtm-reaction@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
