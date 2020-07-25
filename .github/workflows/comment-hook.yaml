@@ -14,10 +14,13 @@ jobs:
 
     - name: Dump GitHub context
       id: trigger
-#      env:
-#        GITHUB_CONTEXT: ${{ toJson(github) }}
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
       run: |
+        echo $GITHUB_CONTEXT        
+
         echo ::set-output name=cmd::${{ github.event.comment.body }}
+        echo ::set-output name=comment_id::${{ github.event.comment.id }}
         echo ::set-output name=pr_url::${{ github.event.issue.pull_request.url }}
         pr_context=`curl ${{ github.event.issue.pull_request.url }}`
         echo ::set-output name=pr_branch::`echo ${pr_context} | jq '.head.ref' --raw-output`
