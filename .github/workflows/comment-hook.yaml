@@ -58,9 +58,15 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         branch: dev
 
-    - uses: micnncim/action-lgtm-reaction@master
+    - name: Reaction
       if: steps.push.conclusion == 'success'
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        trigger: '[".*"]'
+      run: |
+        owner=somen440
+        repo=zatsu
+        comment_id=${{ steps.trigger.outputs.comment_id }}
+        curl -X POST \
+            -H "Content-Type: application/json" \
+            -H "Authorization: token ${secrets.GITHUB_TOKEN}" \
+            -H "Accept: application/vnd.github.squirrel-girl-preview+json" \
+            -d '{"content":"rocket"}' \
+            https://api.github.com/repos/${owner}/${repo}/issues/comments/${comment_id}/reactions
