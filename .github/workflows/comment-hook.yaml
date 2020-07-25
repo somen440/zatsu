@@ -49,11 +49,13 @@ jobs:
 
     - name: Push changes
       if: steps.trigger.outputs.cmd == 'deploy'
+      id: push
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         branch: dev
 
     - uses: micnncim/action-lgtm-reaction@master
+      if: steps.push.conclusion == 'success'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
