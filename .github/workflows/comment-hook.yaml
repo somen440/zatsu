@@ -22,8 +22,6 @@ jobs:
 
     - name: Commit
       if: steps.trigger.outputs.cmd == 'deploy'
-      env:
-        key: ${{}}
       run: |
         echo cmd is deploy
         
