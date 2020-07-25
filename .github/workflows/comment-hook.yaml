@@ -22,13 +22,15 @@ jobs:
 
     - name: Commit
       if: steps.trigger.outputs.cmd == 'deploy'
+      env:
+        key: ${{}}
       run: |
         echo cmd is deploy
         
-        pr_context=`curl https://api.github.com/repos/somen440/zatsu/pulls/5`
-        pr_branch=`echo ${pr_context} | jq '.head.ref'`
-        pr_number=`echo ${pr_context} | jq '.number'`
-        pr_label=`echo ${pr_context} | jq '.head.label'`
+        pr_context=`curl ${{ steps.trigger.outputs.pr_url }}`
+        pr_branch=`echo ${pr_context} | jq '.head.ref' --raw-output`
+        pr_number=`echo ${pr_context} | jq '.number' --raw-output`
+        pr_label=`echo ${pr_context} | jq '.head.label' --raw-output`
         
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
@@ -45,6 +47,7 @@ jobs:
         git commit -m "update dev from #${pr_number} ${pr_label}"
 
     - name: Push changes
+      if: steps.trigger.outputs.cmd == 'deploy'
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
